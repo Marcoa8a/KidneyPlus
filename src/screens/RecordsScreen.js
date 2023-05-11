@@ -2,13 +2,14 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { NativeBaseProvider, Image, Box, Text, IconButton, Icon, VStack, HStack, Stack, Button, Center, StatusBar } from 'native-base';
 import { MaterialIcons, Ionicons, Entypo, AntDesign, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
-import styles from '../styles/styles';
 
 const Record = () => {
     return (
         <View style={{flex: 1, alignItems: 'center', padding: 30}}>
             <Center>
-                <Text style={styles.titleRecord}>Kevin Macias</Text>
+                <Text fontSize="30" mt="1" bold fontWeight="800" textAlign={"center"} pb={1}>
+                    Kevin Macias
+                </Text>
 
                 <HStack alignItems="center">
                     <MaterialIcons

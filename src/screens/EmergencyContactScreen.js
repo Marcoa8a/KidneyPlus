@@ -165,28 +165,26 @@ function Basic({ navigation }) {
     );
 
     return (
-        <Box bg="white" safeArea flex="1">
-            <SwipeListView
-                data={listData}
-                renderItem={renderItem}
-                renderHiddenItem={renderHiddenItem}
-                rightOpenValue={-130}
-                previewRowKey={"0"}
-                previewOpenValue={-40}
-                previewOpenDelay={3000}
-                onRowDidOpen={onRowDidOpen}
-            />
-        </Box>
+        <SwipeListView
+            data={listData}
+            renderItem={renderItem}
+            renderHiddenItem={renderHiddenItem}
+            rightOpenValue={-130}
+            previewRowKey={"0"}
+            previewOpenValue={-40}
+            previewOpenDelay={3000}
+            onRowDidOpen={onRowDidOpen}
+        />
     );
 }
 
-function AppBar() {
+function AppBar({ navigation }) {
     return <>
         <StatusBar bg="#3700B3" barStyle="light-content" />
         <Box safeAreaTop bg="violet.600" />
         <HStack bg="violet.600" px="1" py="3" justifyContent="space-between" alignItems="center" w="100%">
             <HStack alignItems="center" px={1}>
-                <IconButton onPress={() => { }} icon={<Icon size="md" as={AntDesign} name="arrowleft" color="white" />} />
+                <IconButton onPress={() => navigation.navigate(screen.home)} icon={<Icon size="md" as={AntDesign} name="arrowleft" color="white" />} />
                 <Text color="white" fontSize="20" fontWeight="bold">
                     Emergency Contact
                 </Text>
@@ -195,7 +193,8 @@ function AppBar() {
     </>;
 }
 
-function Emergency({ navigation }) {
+function Emergency(props) {
+    const navigation = props.navigation
     const [mode, setMode] = useState("Basic");
     return (
         <>
@@ -207,15 +206,15 @@ function Emergency({ navigation }) {
                     _light={{
                         bg: "white",
                     }}
-                    flex="1"
+                    py={5}
+                    // flex="1"
+                    // flexDirection={'column'}
                     safeAreaTop
                     maxW="1200px"
                     w="100%"
                 >
-                    <AppBar />
-                    <ScrollView >
-                        <Basic navigation={navigation} />
-                    </ScrollView>
+                    {/* <AppBar navigation={navigation}/> */}
+                    <Basic navigation={navigation} />
                 </Box>
             </Center>
             <Icon

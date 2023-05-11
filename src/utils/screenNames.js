@@ -1,15 +1,19 @@
-const screenNames = {
+const ScreenNames = {
     welcome: 'Welcome',
     login: 'Login screen',
     signup: 'Signup screen',
+    home: 'Home',
     main: 'Main',
-    home: 'Home screen',
-    chat: 'ChatScreen',
-    emergency: 'EmergencyContact screen',
-    create: 'CreateContact screen',
-    record: 'Records screen',
-    notification: 'Notifications',
-    realTime: 'RealTime',
+    chat: 'Live Chat',
+    emergency: 'Emergency Contacts',
+    record: 'Records',
+    notification: 'Notification',
+    realTime: 'Real-time Analysis',
+    configuration: 'Configuration',
+    create: 'Create Contact',
+    editprofile: 'Edit profile',
+    diagnostic: 'Diagnostic screen',
+    settings: 'Settings screen',
 };
 
-export default screenNames;
+export default ScreenNames;

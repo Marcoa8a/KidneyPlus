@@ -12,6 +12,9 @@ import Create from "../screens/CreateContactScreen";
 import Chat from "../screens/ChatScreen";
 import Record from "../screens/RecordsScreen";
 import Notification from "../screens/Notifications";
+import RealTime from "../screens/RealTimeScreen";
+import EditProfile from "../screens/EditProfileScreen";
+import Diagnostic from "../screens/DiagnosticScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -60,6 +63,18 @@ const AppStack = () => {
             <Stack.Screen 
                 name={screen.notification}
                 component={Notification}
+            />
+            <Stack.Screen 
+                name={screen.realTime}
+                component={RealTime}
+            />
+            <Stack.Screen 
+                name={screen.editprofile}
+                component={EditProfile}
+            />
+            <Stack.Screen 
+                name={screen.diagnostic}
+                component={Diagnostic}
             />
         </Stack.Navigator>
     );

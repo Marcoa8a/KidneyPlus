@@ -91,9 +91,10 @@ const styles = StyleSheet.create({
     
     //Record screen
     titleRecord: {
-        fontSize: 30,
+        height: 'fit',
+        fontSize: 15,
         fontWeight: 'bold',
-        alignText: 'center',
+        // alignText: 'center',
 
         info: {
             margin: 50,
@@ -143,7 +144,72 @@ const styles = StyleSheet.create({
     seperatorLine: {
         height: 1,
         padding: 2,
-    }
+    },
+
+    //Real time screen
+    containerReal: {
+        flex: 1,
+        justifyContent: 'center', padding: 8,
+        paddingTop: 20,
+        backgroundColor: '#fff',
+    },
+    textT: {
+        textAlign: 'center', fontSize: 18,
+        padding: 16,
+        marginTop: 16,
+        fontSize: 25,
+        fontWeight: 'bold'
+    },
+    btn_Update: {
+        width: '75%',
+        borderRadius: 5,
+        backgroundColor: 'transparent',
+        padding: 5,
+    },
+
+    btn_Text_RT: {
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 15,
+    },
+
+    btn_Diagnostic: {
+        width: '75%',
+        top: -15,
+        borderRadius: 5,
+        backgroundColor: 'transparent',
+        padding: 5,
+    },
+
+    //Edit profile
+    seperatorLine: {
+        height: 1,
+        padding: 2,
+    },
+    styleF: {
+        marginHorizontal: 15,
+    },
+
+    //Diagnostic Screen
+    containerDiagnostic: {
+        flex: 1,
+        backgroundColor: 'white',
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center',
+        padding: 10,
+    },
+    header: {
+            textAlign: 'center', fontSize: 18,
+            padding: 16,
+            marginTop: 16,
+            fontSize: 25,
+            fontWeight: 'bold'
+    },
+    safeA:{
+        backgroundColor: "white",
+        flex: 1,
+    },
 });
 
 export default styles;

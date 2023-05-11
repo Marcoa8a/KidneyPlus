@@ -7,11 +7,13 @@ import screen from '../utils/screenNames';
 const CreateScreen = ({ navigation }) => {
     return (
         <>
-            <AppBar />
+            <AppBar navigation={navigation} />
             <RegisterForm />
         </>
     );
 };
+
+CreateScreen.hideOnMenu = false
 
 export default CreateScreen;
 
@@ -60,13 +62,13 @@ const RegisterForm = () => {
     );
 
 };
-function AppBar() {
+function AppBar({ navigation }) {
     return <>
         <StatusBar bg="#3700B3" barStyle="light-content" />
         <Box safeAreaTop bg="violet.600" />
         <HStack bg="violet.600" px="1" py="3" justifyContent="space-between" alignItems="center" w="100%">
             <HStack alignItems="center">
-                <IconButton onPress={() => navigation.navigate(screen.emergency)} icon={<Icon size="md" as={AntDesign} name="arrowleft" color="white" />} />
+                <IconButton onPress={() => navigation.goBack()} icon={<Icon size="md" as={AntDesign} name="arrowleft" color="white" />} />
                 <Text color="white" fontSize="20" fontWeight="bold">
                     New Contact
                 </Text>

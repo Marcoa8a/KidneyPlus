@@ -5,7 +5,13 @@ import EmergencyContact from "../screens/EmergencyContactScreen";
 import LiveChat from "../screens/ChatScreen";
 import Record from "../screens/RecordsScreen";
 import Notifications from "../screens/Notifications";
-import { Link } from '@react-navigation/native';
+import CreateContact from "../screens/CreateContactScreen";
+import RealTime from "../screens/RealTimeScreen";
+import DiagnosticScreen from "../screens/DiagnosticScreen";
+import SettingsScreen from "../screens/Settings";
+import EditProfile from "../screens/EditProfileScreen";
+import Login from "../screens/LoginScreen";
+import ScreenNames from '../utils/screenNames';
 import {
     createDrawerNavigator,
     DrawerContentScrollView,
@@ -16,7 +22,7 @@ import {
     Button,
     Box,
     HamburgerIcon,
-    Pressable,
+    Pressable,navigation,
     Heading,
     VStack,
     Text,
@@ -24,24 +30,14 @@ import {
     HStack,
     Divider,
     Icon,
-    Image
+    Image,
+    Link,
+    Avatar
 } from "native-base";
 
 global.__reanimatedWorkletInit = () => { };
 
 const Drawer = createDrawerNavigator();
-
-//Crea componentes con la configuración determinada
-function Component(props) {
-    //HAZ UN SWITCH PARA QUE DETECTE CUAL ES EL NOMBRE QUE ESTÁ RECIBIENDO Y NO HAGAS TANTO CÓDIGO    
-    return (        
-        <Center>
-            <Text mt="12" fontSize="18">
-                This is {props.route.name} page.
-            </Text>
-        </Center>
-    );
-}
 
 //Establece los iconos por medio del return
 const getIcon = (screenName) => {
@@ -50,11 +46,13 @@ const getIcon = (screenName) => {
             return "home";
         case "Real-time Analysis":
             return "poll";
-        case "Record":
+        case "Records":
             return "file-document";
         case "Configuration":
             return "cog";
         case "Emergency Contacts":
+            return "account";
+        case "Edit profile":
             return "account";
         case "Notification":
             return "bell-alert";
@@ -66,31 +64,39 @@ const getIcon = (screenName) => {
 };
 
 function CustomDrawerContent(props) {
+    // console.log(props.state.routes)
     return (
         <DrawerContentScrollView {...props} safeArea >
 
             <VStack space="6" my="2" mx="1" backgroundColor={"#fff"}>
 
                 <Box px="5">
-                    <Image
-                        source=""
-                        alt="Avatar"
-                        size={"120px"}
-                        alignContent={"center"}
-                        margin="auto"
-                    />
+                    <Center>
+                <Avatar
+                        mr="1"
+                        bg="amber.500"
+                        source={{
+                        uri: "https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
+                        }}
+                        size="2xl"
+                    >
+                        NB
+                        <Avatar.Badge bg="green.500" />
+                </Avatar>
+                </Center>
+                    
                     <Text fontSize="20" mt="1" bold color="gray.700" fontWeight="800" textAlign={"center"}>
                         Kevin Macias
                     </Text>
                     <Text fontSize="14" mt="1" color="gray.500" fontWeight="500" textAlign={"center"}>
-                        <Link to={{ screen: 'EditUser' }}>
+                        {/*<Link onPress={props.navigation.navigate(ScreenNames.editprofile)}> 
                             Edit user profile
-                        </Link>
+                        </Link>*/}                        
                     </Text>
                 </Box>
                 <VStack divider={<Divider />} space="4">
                     <VStack space="3">
-                        {props.state.routeNames.map((name, index) => (
+                        {props.state.routeNames.filter(name => !!getIcon(name)).map((name, index) => (
                             <Pressable
                                 px="5"
                                 py="3"
@@ -133,12 +139,17 @@ function CustomDrawerContent(props) {
                                         size="5"
                                         as={<MaterialCommunityIcons name="instagram" />}
                                     />
+                                    <Link href="https://www.instagram.com/kidney_plus/">
                                     <Text color="gray.700" fontWeight="500">
                                         Instagram
-                                    </Text>
+                                    </Text> 
+                                    </Link>
                                 </HStack>
                             </Pressable>
-                            <Pressable px="5" py="2">
+                            <Pressable px="5" py="2" 
+                                onPress={(event) => {
+                                    props.navigation.navigate(ScreenNames.login);
+                                }}> 
                                 <HStack space="7" alignItems="center">
                                     <Icon
                                         color="gray.500"
@@ -160,17 +171,21 @@ function CustomDrawerContent(props) {
 
 function MyDrawer() {
     return (
-        <Box safeArea flex={1}>
+        <Box safeArea flex={1} >
             <Drawer.Navigator
                 drawerContent={(props) => <CustomDrawerContent {...props} />}
             >
-                <Drawer.Screen name="Home" component={Home} />
-                <Drawer.Screen name="Real-time Analysis" component={Component} />
-                <Drawer.Screen name="Record" component={Record} />
-                <Drawer.Screen name="Configuration" component={Component} />
-                <Drawer.Screen name="Emergency Contacts" component={EmergencyContact} />
-                <Drawer.Screen name="Notification" component={Notifications} />
-                <Drawer.Screen name="Live Chat" component={LiveChat} />
+                <Drawer.Screen name={ScreenNames.home} component={Home} />
+                <Drawer.Screen name={ScreenNames.realTime} component={RealTime} />
+                <Drawer.Screen name={ScreenNames.record}component={Record} />
+                <Drawer.Screen name={ScreenNames.configuration} component={SettingsScreen} />
+                <Drawer.Screen name={ScreenNames.emergency} component={EmergencyContact} />
+                <Drawer.Screen name={ScreenNames.notification} component={Notifications} />
+                <Drawer.Screen name={ScreenNames.chat} component={LiveChat} />
+                <Drawer.Screen name={ScreenNames.create} component={CreateContact}/>
+                <Drawer.Screen name={ScreenNames.diagnostic} component={DiagnosticScreen}/>
+                <Drawer.Screen name={ScreenNames.editprofile} component={EditProfile}/>
+                <Drawer.Screen name={ScreenNames.login} component={Login} />
             </Drawer.Navigator>
         </Box>
     );
