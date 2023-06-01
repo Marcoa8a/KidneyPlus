@@ -1,68 +1,62 @@
-import {
-  Box,
-  Button,
-  Input,
-  Icon,
-  Stack,
-  VStack,
-  Avatar,
-  Center,
-  FormControl,
-  WarningOutlineIcon,
-  StatusBar,
-  HStack,
-  IconButton,
-  Text,
-} from "native-base";
+import { List } from 'native-base';
+import React from 'react';
+import { useEffect } from 'react';
+import { useState } from 'react';
+import { Text, View } from 'react-native';
+import { ListItem, Avatar } from 'react-native-elements'
+import { firebaseConfig } from '../../firebase-config';
+import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, doc, addDoc, onSnapshot, serverTimestamp, query, orderBy } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
 
-export const Message = ({ message, avatar, time, self }) => {
-  // const timeTag = new Date(time).
+const Chat = ({ id, chatName, enterChat }) => {
 
-  const Image = () => (
-    <Box p={1}>
-      <Avatar
-        bg="cyan.500"
-        alignSelf="center"
-        size="md"
-        source={{
-          uri: avatar,
-        }}
-      />
-    </Box>
-  );
+  const [chatMessages, setChatMessages] = useState([]);
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
 
-  const MsgBox = () => (
-    <VStack
-      mx={3}
-      py={1}
-      space={1}
-      flex={1}
-      alignSelf={"stretch"}
-      alignItems={self ? "flex-end" : "flex-start"}
-      //   w="full"
-      //   maxW="70%"
-    >
-      <Box
-        borderColor="violet.600"
-        borderWidth={1.5}
-        rounded="lg"
-        py={1}
-        px={2}
-        bg={self ? "violet.600" : "violet.50"}
-        // maxW="70%"
-      >
-        <Text color={self ? "violet.50" : "violet.800"} overflow={"visible"}>
-          {message}
-        </Text>
-      </Box>
-      <Text color="gray.600">{time}</Text>
-    </VStack>
-  );
+  useEffect(() => {
+    let unsubscribe;
+  
+    const chatRef = doc(db, 'chats', id);
+    const messagesRef = collection(chatRef, 'messages');
+  
+    unsubscribe = onSnapshot(
+      query(messagesRef, orderBy('timestamp', 'desc')),
+      (snapshot) => {
+        const Messages = snapshot.docs.map((doc) => ({
+          data: doc.data(),
+        }));
+        setChatMessages(Messages);
+      }
+    );
+  
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, []);   
 
   return (
-    <HStack flex={1} space={3} direction={self ? "row-reverse" : "row"}>
-      <Image />
-      <MsgBox />
-    </HStack>
+    <ListItem onPress={() => enterChat(id, chatName)} key={id} bottomDivider>
+      <Avatar
+        rounded
+        source={{
+          uri: "https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
+        }}
+      />
+      <ListItem.Content>
+        <ListItem.Title style={{ fontWeight: "800" }}>
+          {chatName}
+        </ListItem.Title>
+        <ListItem.Subtitle numberOfLines={1} ellipsizeMode='tail'>
+          {chatMessages?.[0]?.data?.displayName}: {chatMessages?.[0]?.data?.message}
+        </ListItem.Subtitle>
+      </ListItem.Content>
+    </ListItem>
   );
 };
+
+export default Chat;

@@ -210,6 +210,75 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
         flex: 1,
     },
+
+    //Add new chat styles
+    containerAddChat: {
+        backgroundColor: "white",
+        padding: 30,
+        height: "100%"
+    },
+
+    //LiveChat styles
+    containerLiveChat: {
+        height: '100%',
+    },
+
+    //ChatScreen styles
+    containerChatScreen: {
+        flex: 1,
+    },
+
+    footerChatScreen: {
+        flexDirection: "row",
+        alignItems: "center",
+        width: "100%",
+        padding: 15,
+    },
+
+    textInputChatScreen: {
+        bottom: 0,
+        height: 40,
+        flex: 1,
+        marginRight: 15,
+        backgroundColor: "#ECECEC",
+        padding: 10,
+        color: "grey",
+        borderRadius: 30,
+    },
+
+    reciever: {
+        padding: 15,
+        backgroundColor: "#ECECEC",
+        alignSelf: "flex-end",
+        borderRadius: 20,
+        marginRight: 15,
+        marginBottom: 20,
+        maxWidth: "80%",
+        position: "relative",
+    },
+
+    sender: {
+        padding: 15,
+        backgroundColor: "#2B68E6",
+        alignSelf: "flex-start",
+        borderRadius: 20,
+        margin: 15,
+        maxWidth: "80%",
+        position: "relative", 
+    },
+
+    senderText: {
+        color: "white",
+        fontWeight: "500",
+        marginLeft: 10,
+        marginBottom: 15,
+    },
+
+    recieverText: {
+        color: "black",
+        fontWeight: "500",
+        marginLeft: 10,
+    },
 });
 
 export default styles;

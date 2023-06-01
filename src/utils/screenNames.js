@@ -14,6 +14,8 @@ const ScreenNames = {
     editprofile: 'Edit profile',
     diagnostic: 'Diagnostic screen',
     settings: 'Settings screen',
+    addchat: 'Add Chat',
+    chatscreen: 'Chat Screen',
 };
 
 export default ScreenNames;

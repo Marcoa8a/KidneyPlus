@@ -9,12 +9,14 @@ import Signup from '../screens/SignupScreen';
 import Home from '../screens/HomeScreen';
 import Emergency from "../screens/EmergencyContactScreen";
 import Create from "../screens/CreateContactScreen";
-import Chat from "../screens/ChatScreen";
+import Chat from "../screens/LiveChat";
 import Record from "../screens/RecordsScreen";
 import Notification from "../screens/Notifications";
 import RealTime from "../screens/RealTimeScreen";
 import EditProfile from "../screens/EditProfileScreen";
 import Diagnostic from "../screens/DiagnosticScreen";
+import AddChat from "../screens/AddChatScreen";
+import ChatScreen from "../screens/ChatScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -75,6 +77,14 @@ const AppStack = () => {
             <Stack.Screen 
                 name={screen.diagnostic}
                 component={Diagnostic}
+            />
+            <Stack.Screen 
+                name={screen.addchat}
+                component={AddChat}
+            />
+            <Stack.Screen 
+                name={screen.chatscreen}
+                component={ChatScreen}
             />
         </Stack.Navigator>
     );

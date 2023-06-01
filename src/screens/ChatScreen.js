@@ -1,195 +1,178 @@
-import React from "react";
-import { View } from "react-native";
-import {
-  Box,
-  Button,
-  Input,
-  Icon,
-  Stack,
-  VStack,
-  Avatar,
-  Center,
-  FormControl,
-  WarningOutlineIcon,
-  StatusBar,
-  HStack,
-  IconButton,
-  Text,
-  Pressable,
-  ScrollView,
-} from "native-base";
-import {
-  MaterialIcons,
-  Ionicons,
-  Entypo,
-  AntDesign,
-  FontAwesome,
-  FontAwesome5,
-  Feather,
-} from "@expo/vector-icons";
-import { Message } from "../components/chat";
+import React, { useLayoutEffect, useState, useEffect } from 'react';
+import { View, Text } from 'native-base';
+import { Avatar } from 'react-native-elements';
+import { Keyboard, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StatusBar, TextInput, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import styles from '../styles/styles';
+import { firebaseConfig } from '../../firebase-config';
+import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, doc, addDoc, onSnapshot, serverTimestamp, query, orderBy } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
 
-const Avatars = {
-  patient:
-    "https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
-  doctor:
-    "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-};
+const ChatScreen = ({ navigation, route }) => {
 
-const ChatMockupData = [
-  {
-    message: "Hi doctor",
-    time: "8:20 PM",
-  },
-  {
-    message:
-      "Hi Kevin, I saw that you have major kidney problems., I changed you to new medications.,",
-    time: "8:24 PM",
-    self: true,
-  },
-  {
-    message: "very well doctor",
-    time: "8:25 PM",
-  },
-  {
-    message:
-      "You are welcome kevin I will be checking on your progress, good evening,",
-    time: "8:27 PM",
-    self: true,
-  },
-  {
-    message: "Thanks doctor",
-    time: "8:30 PM",
-  },
-];
+    const [input, setInput] = useState("");
+    const [messages, setMessages] = useState([]);
 
-const Appbar = ({ navigation }) => {
-  return (
-    <>
-      {/* <StatusBar bg="#3700B3" barStyle="light-content" /> */}
-      <Box safeAreaTop bg="violet.600" />
-      <HStack
-        bg="violet.600"
-        px="1"
-        py="3"
-        justifyContent="space-between"
-        alignItems="center"
-        w="100%"
-      >
-        <HStack alignItems="center">
-          <IconButton
-            onPress={() => navigation.goBack()}
-            icon={
-              <Icon size="md" as={AntDesign} name="arrowleft" color="white" />
-            }
-          />
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
 
-          <Avatar
-            mr="5"
-            bg="amber.500"
-            source={{
-              uri: Avatars.doctor,
-            }}
-            size="sm"
-          >
-            NB
-            <Avatar.Badge bg="green.500" />
-          </Avatar>
-          <Text color="white" fontSize="20" fontWeight="bold">
-            Doctor García
-          </Text>
-        </HStack>
-        <HStack>
-          <IconButton
-            icon={
-              <Icon as={Ionicons} name="call-sharp" size="sm" color="white" />
-            }
-          />
-          <IconButton
-            icon={
-              <Icon as={FontAwesome5} name="video" size="sm" color="white" />
-            }
-          />
-          <IconButton
-            icon={
-              <Icon
-                as={Entypo}
-                name="info-with-circle"
-                size="sm"
-                color="white"
-              />
-            }
-          />
-        </HStack>
-      </HStack>
-    </>
-  );
-};
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            title: 'Chat',
+            headerTitleAlign: "left",
+            headerTitle: () => (
+                <View
+                    style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                    }}
+                >
+                    <Avatar
+                        rounded
+                        source={{ uri: "https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80" }}
+                    />
+                    <Text style={{ marginLeft: 10, fontWeight: "700" }}>{route.params.chatName}</Text>
+                </View>
+            ),
+            headerRight: () => (
+                <View
+                    style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        width: 80,
+                        marginRight: 20,
+                    }}
+                >
+                    <TouchableOpacity>
+                        <FontAwesome name="video-camera" size={24} color="#0091FB" />
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+                        <Ionicons name="call" size={24} color="#0091FB" />
+                    </TouchableOpacity>
+                </View>
+            ),
+        });
+    }, [navigation]);
 
-const Chat = () => {
-  return (
-    <ScrollView w="full">
-      <VStack my="2" px="3" w="full">
-        {ChatMockupData.map((data, index) => (
-          <Message
-            key={index}
-            avatar={data.self ? Avatars.doctor : Avatars.patient}
-            message={data.message}
-            time={data.time}
-            self={data.self}
-          />
-        ))}
-      </VStack>
-    </ScrollView>
-  );
-};
+    const sendMessage = async () => {
+        Keyboard.dismiss();
+        const chatRef = doc(db, 'chats', route.params.id);
+        const messagesRef = collection(chatRef, 'messages');
 
-const MessageBox = () => {
-  return (
-    <Stack space={4} w="100%" alignItems="center">
-      <Input
-        borderColor={"violet.400"}
-        borderWidth={"2"}
-        w={{
-          base: "95%",
-          md: "25%",
-        }}
-        safeAreaTop
-        InputRightElement={
-          <>
-            <Pressable>
-              <Icon
-                as={<Feather name="paperclip" />}
-                size={5}
-                mr="2"
-                color="violet.400"
-              />
-            </Pressable>
+        try {
 
-            <Pressable>
-              <Icon
-                as={<FontAwesome name="send" />}
-                size={5}
-                mr="2"
-                color="violet.400"
-              />
-            </Pressable>
-          </>
+            // Agrega el mensaje a la subcolección "messages"
+            await addDoc(messagesRef, {
+                timestamp: serverTimestamp(),
+                message: input,
+                displayName: auth.currentUser.displayName,
+                email: auth.currentUser.email,
+            });
+
+            setInput("");
+        } catch (error) {
+            console.log("Error sending message:", error);
+            console.log(auth.currentUser.displayName)
+            console.log(auth.currentUser.email)
         }
-        placeholder="Enter a message"
-      />
-    </Stack>
-  );
-};
+    };
 
-const ChatScreen = ({ navigation }) => {
-  return (
-    <VStack w="full">
-      <Appbar navigation={navigation} />
-      <Chat />
-      <MessageBox />
-    </VStack>
-  );
-};
+    //Obtenemos la colección de mensajes y los mostramos como un chat 
+    useLayoutEffect(() => {
+        let unsubscribe;
+
+        if (route.params && route.params.id) {
+            const chatRef = doc(db, 'chats', route.params.id);
+            const messagesRef = collection(chatRef, 'messages');
+
+            unsubscribe = onSnapshot(
+                query(messagesRef, orderBy('timestamp', 'desc')),
+                (snapshot) => {
+                    const updatedMessages = snapshot.docs.map((doc) => ({
+                        id: doc.id,
+                        data: doc.data(),
+                    }));
+                    setMessages(updatedMessages);
+                }
+            );
+        }
+
+        return () => {
+            if (unsubscribe) {
+                unsubscribe();
+            }
+        };
+    }, [route]);
+
+    return (
+        <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+            <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                style={styles.containerChatScreen}
+                keyboardVerticalOffset={130}
+            >
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <>
+                        <ScrollView contentContainerStyle={{ paddingTop: 15 }}>
+                            {messages.map(({ id, data }) => (
+                                data.email === auth.currentUser.email ? (
+                                    <View key={id} style={styles.reciever}>
+                                        <Avatar
+                                            position="absolute"
+                                            rounded
+                                            bottom={-15}
+                                            right={-5}
+                                            size={30}
+                                            source={{
+                                                uri: "https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
+                                            }}
+                                        />
+                                        <Text style={styles.recieverText}>{data.message}</Text>
+                                    </View>
+                                ) : (
+                                    <View style={styles.sender}>
+                                        <Avatar
+                                            position="absolute"
+                                            containerStyle={{
+                                                position: "absolute",
+                                                bottom: -15,
+                                                left: -5,
+                                            }}
+                                            rounded
+                                            bottom={-15}
+                                            right={-5}
+                                            size={30}
+                                            source={{
+                                                uri: "https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
+                                            }}
+                                        />
+                                        <Text style={styles.senderText}>{data.message}</Text>
+                                    </View>
+                                )
+                            ))}
+                        </ScrollView>
+                        <View style={styles.footerChatScreen}>
+                            <TextInput
+                                value={input}
+                                onChangeText={(text) => setInput(text)}
+                                onSubmitEditing={sendMessage}
+                                placeholder='Signal Message'
+                                style={styles.textInputChatScreen}
+                            />
+                            <TouchableOpacity
+                                onPress={sendMessage}
+                                activeOpacity={0.5}
+                            >
+                                <Ionicons name="send" size={24} color="#0091FB" />
+                            </TouchableOpacity>
+                        </View>
+                    </>
+                </TouchableWithoutFeedback>
+            </KeyboardAvoidingView>
+        </SafeAreaView>
+    );
+}
 
 export default ChatScreen;

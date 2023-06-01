@@ -1,8 +1,9 @@
 import * as React from "react";
+import { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import Home from "../screens/HomeScreen";
 import EmergencyContact from "../screens/EmergencyContactScreen";
-import LiveChat from "../screens/ChatScreen";
+import LiveChat from "../screens/LiveChat";
 import Record from "../screens/RecordsScreen";
 import Notifications from "../screens/Notifications";
 import CreateContact from "../screens/CreateContactScreen";
@@ -11,7 +12,14 @@ import DiagnosticScreen from "../screens/DiagnosticScreen";
 import SettingsScreen from "../screens/Settings";
 import EditProfile from "../screens/EditProfileScreen";
 import Login from "../screens/LoginScreen";
+import AddChat from "../screens/AddChatScreen";
+import ChatScreen from "../screens/ChatScreen";
 import ScreenNames from '../utils/screenNames';
+
+import {getAuth, onAuthStateChanged} from 'firebase/auth';
+import { initializeApp } from 'firebase/app';
+import { firebaseConfig } from '../../firebase-config'; 
+
 import {
     createDrawerNavigator,
     DrawerContentScrollView,
@@ -64,6 +72,23 @@ const getIcon = (screenName) => {
 };
 
 function CustomDrawerContent(props) {
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const [displayName, setDisplayName] = useState(null);
+  
+    //Obtiene el displayName registrado por el usuario en el login
+    useEffect(() => {
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        if (user) {
+          setDisplayName(user.displayName);
+        } else {
+          setDisplayName(null);
+        }
+      });
+    
+      return () => unsubscribe();
+    }, []);
     // console.log(props.state.routes)
     return (
         <DrawerContentScrollView {...props} safeArea >
@@ -86,7 +111,7 @@ function CustomDrawerContent(props) {
                 </Center>
                     
                     <Text fontSize="20" mt="1" bold color="gray.700" fontWeight="800" textAlign={"center"}>
-                        Kevin Macias
+                        {displayName}
                     </Text>
                     <Text fontSize="14" mt="1" color="gray.500" fontWeight="500" textAlign={"center"}>
                         {/*<Link onPress={props.navigation.navigate(ScreenNames.editprofile)}> 
@@ -186,6 +211,8 @@ function MyDrawer() {
                 <Drawer.Screen name={ScreenNames.diagnostic} component={DiagnosticScreen}/>
                 <Drawer.Screen name={ScreenNames.editprofile} component={EditProfile}/>
                 <Drawer.Screen name={ScreenNames.login} component={Login} />
+                <Drawer.Screen name={ScreenNames.addchat} component={AddChat} />
+                <Drawer.Screen name={ScreenNames.chatscreen} component={ChatScreen} />
             </Drawer.Navigator>
         </Box>
     );
